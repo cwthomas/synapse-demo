@@ -10,10 +10,24 @@ $conn = new mysqli($servername, $username, $password);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
-echo "Connected successfully";
+$sql = "SELECT id, name, str, dex FROM player";
+$result = $conn->query($sql);
+
+
 ?>
 
 <html>
   <title>Hello World</title>
-  <body>Hello World</body>
+  <body><?php 
+    if ($result->num_rows > 0) {
+  // output data of each row
+  while($row = $result->fetch_assoc()) {
+    echo "Name: " . $row["name"]. " - Str: " . $row["str"]. " - Dex: " . $row["dex"]. "<br>";
+  }
+} else {
+  echo "0 results";
+}
+$conn->close();
+    
+    ?></body>
 </html>
