@@ -1,4 +1,5 @@
 <?php
+require('../vendor/autoload.php');
 $servername = "us-cdbr-east-03.cleardb.com";
 $username = "b187614a16d726";
 $password = "950b4df7";
@@ -17,7 +18,7 @@ $result = $conn->query($sql);
 ?>
 
 <html>
-  <title>Hello World</title>
+  <title>Hello Worldx</title>
   <body><?php 
     if ($result->num_rows > 0) {
   // output data of each row
