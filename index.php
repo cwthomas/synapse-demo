@@ -1,5 +1,5 @@
 <?php
-$servername = "us-cdbr-east-03.cleardb.co";
+$servername = "us-cdbr-east-03.cleardb.com";
 $username = "b187614a16d726";
 $password = "950b4df7";
 //mysql://b187614a16d726:950b4df7@us-cdbr-east-03.cleardb.com/heroku_01356cb77fdb7dd?reconnect=true
