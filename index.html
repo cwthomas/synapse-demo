@@ -1,0 +1,134 @@
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="web/stylesheets/rogue.css">
+    <script src="web/js/gameLogic.js"></script>
+    <script src="web/js/helpers.js"></script>
+    <script src="web/js/render.js"></script>
+</head>
+<script>
+    store = {};
+
+
+    document.onkeydown = function (event) {
+        switch (event.keyCode) {
+            case 37:
+                movePlayerDelta(-1, 0);
+                break;
+            case 38:
+                movePlayerDelta(0, -1);
+                break;
+            case 39:
+                movePlayerDelta(1, 0);
+                break;
+            case 40:
+                movePlayerDelta(0, 1);
+                break;
+        }
+    };
+
+
+
+
+    function storePlayer(player) {
+
+        return $.post("api/player.php", player, function (result) {
+            var player = JSON.parse(result);
+            store.player = player;
+        });
+    }
+
+    function spawnEnemies() {
+        var enemies = store.map.enemies;
+        for (var i = 0; i < enemies; i++) {
+
+            var location = getRandomMapLocation();
+            while (!isAvailable(location)) {
+                location = getRandomMapLocation();
+            }
+            spawnEnemy(location.x, location.y);
+        }
+    }
+
+
+    function startGame() {
+        // yes in this instance it's a bit overkill to do another trip
+        // when we could have just let the PHP server set the player start
+        // though in a real game, we probably wouldn't be constantly saving player postition
+        // only save points.
+        store.enemies = [];
+        movePlayer(store.map.startX, store.map.startY);
+        spawnEnemies();
+        render();
+        console.log(store);
+    }
+
+    // canvas size = 20 x 12
+
+    function getRandom(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    function reset() {
+        var gameData = $.get("api/setup.php", function (data) {
+            alert(data);
+            location.reload();
+        });
+    }
+
+    $(document).ready(function () {
+
+        var gameData = $.get("api/gameData.php", function (data) {
+            var gameData = JSON.parse(data);
+            store = { ...store, ...gameData };
+            if (!store.playerItems) {
+                store.playerItems = [];
+            }
+            console.log(store);
+        });
+
+        $.when(gameData).done(function () {
+            startGame();
+        })
+
+    });
+
+
+</script>
+<title>Synapse Rogue</title>
+
+<body>
+    <div style="display: grid; grid-gap:10px">
+        <button onclick="reset();" style="grid-column: 1;grid-row:3; height: 30px;">Reset Game</button>
+        <div style="grid-column: 2;">
+            <div style="grid-row: 1;" >
+                <div id="hud" style="font-weight: bold;"></div>
+            </div>
+            <canvas id="levelCanvas" width="1000" height="600" style="grid-row: 2; border:1px solid #000000;">
+        
+            </canvas>
+            <div id="message" class="centered-block" style="font-weight: bold;grid-row: 2"></div>
+        </div>
+        <div id="inventory" style="grid-column: 3;">
+            <div style="display: grid; grid-gap:10px">
+               <div style="grid-row:1; height:80px">Player Items (press # key of item to use)</div>
+               <div style="grid-row:2; height:80px">1 <img id="inv1" style="height:50px; width:50px;"></img><div id="inv1desc"></div></div>
+               <div style="grid-row:3; height:80px">2 <img id="inv2" style="height:50px; width:50px;"></img><div id="inv2desc"></div></div>
+               <div style="grid-row:4; height:80px">3 <img id="inv3" style="height:50px; width:50px;"></img><div id="inv3desc"></div></div>
+               <div style="grid-row:5; height:80px">4 <img id="inv4" style="height:50px; width:50px;"></img><div id="inv4desc"></div></div>
+               <div style="grid-row:6; height:80px">5 <img id="inv5" style="height:50px; width:50px;"></img><div id="inv5desc"></div></div>
+            </div>
+        </div>
+      
+    </div>
+
+    <img id="player-icon" src="web/images/ninja_icon.png" style="display: none;">
+    <img id="monster-icon" src="web/images/monster.png" style="display: none;">
+    <img id="boss-icon" src="web/images/monster.png" style="display: none; color:red">
+    <img id="red-potion-icon" src="web/images/potion.png" style="display: none; color:red">
+    <img id="blue-potion-icon" src="web/images/potion.png" style="display: none; color:blue">
+    <img id="blank-icon" src="" style="width:50px; height:50px;display: none">
+</body>
+
+</html>
