@@ -25,18 +25,28 @@
             case 40:
                 movePlayerDelta(0, 1);
                 break;
+            case 49:
+                useItem(1);
+                break;
+            case 50:
+                useItem(2);
+                break;
+            case 51:
+                useItem(3);
+                break;
+            case 52:
+                useItem(4);
+                break;
+            case 53:
+                useItem(5);
+                break;
+            case 83:
+                dumpStore();
         }
     };
 
-
-
-
-    function storePlayer(player) {
-
-        return $.post("api/player.php", player, function (result) {
-            var player = JSON.parse(result);
-            store.player = player;
-        });
+    function dumpStore() {
+        console.log(store);
     }
 
     function spawnEnemies() {
@@ -85,6 +95,7 @@
             if (!store.playerItems) {
                 store.playerItems = [];
             }
+            store.playerLoc = { x: 0, y:0 }
             console.log(store);
         });
 
@@ -102,25 +113,35 @@
     <div style="display: grid; grid-gap:10px">
         <button onclick="reset();" style="grid-column: 1;grid-row:3; height: 30px;">Reset Game</button>
         <div style="grid-column: 2;">
-            <div style="grid-row: 1;" >
+            <div style="grid-row: 1;">
                 <div id="hud" style="font-weight: bold;"></div>
             </div>
             <canvas id="levelCanvas" width="1000" height="600" style="grid-row: 2; border:1px solid #000000;">
-        
+
             </canvas>
             <div id="message" class="centered-block" style="font-weight: bold;grid-row: 2"></div>
         </div>
         <div id="inventory" style="grid-column: 3;">
             <div style="display: grid; grid-gap:10px">
-               <div style="grid-row:1; height:80px">Player Items (press # key of item to use)</div>
-               <div style="grid-row:2; height:80px">1 <img id="inv1" style="height:50px; width:50px;"></img><div id="inv1desc"></div></div>
-               <div style="grid-row:3; height:80px">2 <img id="inv2" style="height:50px; width:50px;"></img><div id="inv2desc"></div></div>
-               <div style="grid-row:4; height:80px">3 <img id="inv3" style="height:50px; width:50px;"></img><div id="inv3desc"></div></div>
-               <div style="grid-row:5; height:80px">4 <img id="inv4" style="height:50px; width:50px;"></img><div id="inv4desc"></div></div>
-               <div style="grid-row:6; height:80px">5 <img id="inv5" style="height:50px; width:50px;"></img><div id="inv5desc"></div></div>
+                <div style="grid-row:1; height:80px">Player Items (press # key of item to use)</div>
+                <div style="grid-row:2; height:80px">1 <img id="inv1" style="height:50px; width:50px;"></img>
+                    <div id="inv1desc"></div>
+                </div>
+                <div style="grid-row:3; height:80px">2 <img id="inv2" style="height:50px; width:50px;"></img>
+                    <div id="inv2desc"></div>
+                </div>
+                <div style="grid-row:4; height:80px">3 <img id="inv3" style="height:50px; width:50px;"></img>
+                    <div id="inv3desc"></div>
+                </div>
+                <div style="grid-row:5; height:80px">4 <img id="inv4" style="height:50px; width:50px;"></img>
+                    <div id="inv4desc"></div>
+                </div>
+                <div style="grid-row:6; height:80px">5 <img id="inv5" style="height:50px; width:50px;"></img>
+                    <div id="inv5desc"></div>
+                </div>
             </div>
         </div>
-      
+
     </div>
 
     <img id="player-icon" src="web/images/ninja_icon.png" style="display: none;">
@@ -128,7 +149,7 @@
     <img id="boss-icon" src="web/images/monster.png" style="display: none; color:red">
     <img id="red-potion-icon" src="web/images/potion.png" style="display: none; color:red">
     <img id="blue-potion-icon" src="web/images/potion.png" style="display: none; color:blue">
-    <img id="blank-icon" src="" style="width:50px; height:50px;display: none">
+    <img id="blank-icon" src="web/images/empty.png" style="width:50px; height:50px;display: none">
 </body>
 
 </html>

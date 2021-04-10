@@ -27,7 +27,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 // I like to keep the data "flat" as separate arrays of entities (maps and mapItems) instead of nested ( maps ( items) ) as it makes it much simpler to update, insert delete etc.
 // It also keeps things more flexible overall.
 if ('GET' === $method) {
-  $player = $playerData->get($conn,1);
+  $player = $playerData->get($conn, 1);
   $map = $mapData->get($conn);
   $mapItems = $mapItemsData->get($conn);
   $enemies = $enemyData->get($conn);
@@ -45,16 +45,49 @@ if ('GET' === $method) {
   echo json_encode($game_data);
 }
 
-// if ('POST' === $method) {
-//   $player_item = $playerData->getPlayerFromPOST($_POST);
-//   $result = $playerData->put($conn, $player_item);
-//   if ($result === TRUE) {
-//     http_response_code(200);
-//     echo json_encode($player_item);
-//   } else {
-//     echo "Error updating record: " . $conn->error;
-//   }
-// }
+
+// right now only player and player items can be persisted, but would add more if needed
+if ('POST' === $method) {  
+  $playerID = intval($_POST["playerID"]);
+  $playerItemsEmpty = false;
+
+  if ($_POST["playerItems"] ){
+    if ($_POST["playerItems"] == "empty") {
+      $playerItems = array();
+      $playerItemsEmpty = true;
+    } else {
+      $playerItems = $playerItemsData->getItemsFromPost($_POST["playerItems"]);
+    }
+  }
+ 
+  $player = $playerData->getPlayerFromPOST($_POST["player"]);
+
+
+  $resultObject = array();
+
+  if ($playerItems) {
+    $playerItemsData->putItems($conn, $playerItems, $playerID);
+    $resultObject["playerItems"] = $playerItems;
+  }
+
+  if ($playerItemsEmpty) {
+    $playerItemsData->clearItems($conn, $playerID);
+    $resultObject["playerItems"] = "empty";
+  }
+
+  if ($player) {
+    $playerData->put($conn, $player);
+    $resultObject["player"] = $player;
+  }
+
+  if (!$conn->error) {
+    http_response_code(200);
+
+    echo json_encode($resultObject);
+  } else {
+    echo "Error updating record: " . $conn->error;
+  }
+}
 
 
 $conn->close();

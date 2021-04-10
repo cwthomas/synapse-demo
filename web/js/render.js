@@ -62,11 +62,19 @@ function getImageForItem(id) {
 }
 
 function renderInventory() {
+    clearInventory();
     var limit = Math.min(store.playerItems.length, 5);
-    for(var i = 1; limit; i++ ){
-        var id = store.playerItems[i-1].id;
+    for(var i = 1; i<= limit; i++ ){
+        var id = store.playerItems[i-1].itemID;
         var item = selectItem(id);
         renderInventoryItem(i, item);
+    }
+}
+
+function clearInventory() {
+    for(var i = 1; i<= 5; i++) {
+        $("#inv"+i).attr("src", $("#blank-icon")[0].src);
+        $("#inv"+i+"desc").html("");
     }
 }
 
@@ -103,7 +111,7 @@ function renderHUD() {
 function render() {
     clearCanvas();
     renderMap();
-    renderPlayer(store.player.x, store.player.y);
+    renderPlayer(store.playerLoc.x, store.playerLoc.y);
     renderEnemies();
     renderHUD();
     renderInventory();

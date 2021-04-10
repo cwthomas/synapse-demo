@@ -20,10 +20,8 @@ class PlayerItemsData {
       return $playerItems;
   }}
 
-  public function putItem($conn, $playerItem) {
-    extract($playerItem);
-
-    $sql = "INSERT INTO player SET name='".$name."', atk=".$atk.", def=".$def.", hp=".$hp.", xp=".$xp." WHERE id = ".$id;
+  public function putItem($conn, $playerItem, $playerID) {
+    $sql = "INSERT INTO playeritems VALUES (".$playerID.",".$playerItem["itemID"].", 1)";
     $result = $conn->query($sql);
     if ($conn->error) {
       echo $conn->error;
@@ -32,35 +30,41 @@ class PlayerItemsData {
     return $result;
   }
 
-  public function putItems($conn, $playerItems, $playerID){
-    // for a case with just a few items it's easiest to just clear the entires and re-write
-    // as opposed to determining insert/update/delete
-    // for situations with a large number of items, calculating the delta would be more appropriate
+  public function clearItems($conn, $playerID) {
     $sqlClear = "DELETE FROM playeritems WHERE player_id = ".$playerID;
     $conn->query($sqlClear);
     if ($conn->error) {
       echo $conn->error;
       return;
     }
+  }
+
+  public function putItems($conn, $playerItems, $playerID){
+    // for a case with just a few items it's easiest to just clear the entires and re-write
+    // as opposed to determining insert/update/delete
+    // for situations with a large number of items, calculating the delta would be more appropriate
+    $this->clearItems($conn, $playerID);
+
     foreach($playerItems as $playerItem) {
-      $this->putItem($conn, $playerItem);
+      $this->putItem($conn, $playerItem, $playerID);
     }
   }
 
+  public function getItemsFromPost($postData){
+    $newItems = array();
+    foreach($postData as $oldPlayerItem){
+      $playerItem = array(
+        "playerID" => intval($oldPlayerItem["playerID"]),
+        "itemID" => intval($oldPlayerItem["itemID"]),
+        "qty" =>intval($oldPlayerItem["qty"]),
+      );
+      array_push($newItems, $playerItem);
+    }
+
+      return $newItems;
+}
+
 
   
-  public function getPlayerItemsPOST($postData){
-    echo $postData;
-    extract($postData);
-    // $player_item = array(
-    //     "id" => intval($id),
-    //     "name" => $name,
-    //     "atk" => intval($atk),
-    //     "def" => intval($def),
-    //     "hp" => intval($hp),
-    //     "xp" => intval($xp)
-    //   );
-    //   return $player_item;
-}
 
 }

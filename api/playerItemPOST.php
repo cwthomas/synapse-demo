@@ -1,5 +1,6 @@
 <?php
 include_once '../config/database.php';
+include_once './playerItemsData.php';
 $database = new Database();
 $conn = $database->getConnection();
 
@@ -9,15 +10,18 @@ $playerItemsData = new PlayerItemsData();
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ('POST' === $method) {
-  $player_item = $playerData->getPlayerFromPOST($_POST);
-  $result = $playerData->put($conn, $player_item);
-  if ($result === TRUE) {
+  $playerItems =$_POST["playerItems"];
+  $playerID = $_POST["playerID"];
+  $playerItemsData->putItems($conn, $playerItems, $playerID);
+  if (!$conn->error) {
     http_response_code(200);
-    echo json_encode($player_item);
+    echo json_encode($playerItems);
   } else {
     echo "Error updating record: " . $conn->error;
   }
 }
+
+
 
 
 $conn->close();
