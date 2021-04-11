@@ -2,8 +2,8 @@
 include_once '../config/database.php';
 
 class PlayerItemsData {
-  public function get($conn) {
-    $sql = "SELECT player_id, item_id, qty FROM playeritems;";
+  public function get($conn, $playerID) {
+    $sql = "SELECT player_id, item_id, qty FROM playeritems WHERE player_id =".$playerID;
     $result = $conn->query($sql);
     $playerItems = array();
     if ($result->num_rows > 0) {

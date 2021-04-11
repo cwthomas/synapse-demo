@@ -58,6 +58,9 @@ function getImageForItem(id) {
         case 2:  // defense potion
         return img = $("#blue-potion-icon")[0];
         break;
+        case 3:  // bomb potion
+        return img = $("#bomb-icon")[0];
+        break;
     }
 }
 
@@ -87,14 +90,15 @@ function renderInventoryItem(itemNo, item) {
 
 
 function renderEnemies() {
-    for (var i = 0; i < store.enemies.length; i++) {
-        var enemy = store.enemies[i];
+    for (var i = 0; i < store.activeEnemies.length; i++) {
+        var enemy = store.activeEnemies[i];
         renderMonster(enemy.x, enemy.y);
     }
 }
 
 
 function playerMessage(message) {
+    console.log(message);
     $("#message").html(message);
     
 }

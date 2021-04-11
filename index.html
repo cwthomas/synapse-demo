@@ -4,7 +4,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="web/stylesheets/rogue.css">
     <script src="web/js/gameLogic.js"></script>
-    <script src="web/js/helpers.js"></script>
+    <script src="web/js/items.js"></script>
     <script src="web/js/render.js"></script>
 </head>
 <script>
@@ -12,6 +12,10 @@
 
 
     document.onkeydown = function (event) {
+        // keep player from moving while waiting for request from server
+        if (store.pause){
+            return;
+        }
         switch (event.keyCode) {
             case 37:
                 movePlayerDelta(-1, 0);
@@ -67,10 +71,14 @@
         // when we could have just let the PHP server set the player start
         // though in a real game, we probably wouldn't be constantly saving player postition
         // only save points.
-        store.enemies = [];
+        store.activeEnemies = [];
         movePlayer(store.map.startX, store.map.startY);
         spawnEnemies();
         render();
+
+        // this is used to keep player from moving and acting while
+        // XHR's are in flight.
+        store.pause = false;
         console.log(store);
     }
 
@@ -150,6 +158,7 @@
     <img id="red-potion-icon" src="web/images/potion.png" style="display: none; color:red">
     <img id="blue-potion-icon" src="web/images/potion.png" style="display: none; color:blue">
     <img id="blank-icon" src="web/images/empty.png" style="width:50px; height:50px;display: none">
+    <img id="bomb-icon" src="web/images/bomb.png" style="display: none; color:blue">
 </body>
 
 </html>

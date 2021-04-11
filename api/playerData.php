@@ -1,6 +1,7 @@
 <?php
 
 class PlayerData {
+
     public function get($conn, $player_id) {
       $sql = "SELECT id, name, atk, def, hp, xp FROM player WHERE id =".$player_id;
       $result = $conn->query($sql);
