@@ -4,6 +4,8 @@ To fulfill the requirements of the interview test, I created this game. While th
 
 You can play it here: (Syapse Rogue)[https://synapse-rogue.herokuapp.com/]
 
+Also the requested SQL schema dump is in the /schema folder.
+
 
 ## Playing
 The play is simple.  At the start of the game you will see a map which has the player.  At the top are the player stats.
@@ -62,6 +64,8 @@ Server Game Logic
 - Battle Rewards - When the player wins a battle, the rewards are handled entirely in the REST API
 
 ## Database
+NOTE: the schema dump is in the /sql folder of this project
+
 The database consists of several tables as well as stored procedures.  The schema is fully normalized:
 
 Tables
