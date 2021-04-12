@@ -10,8 +10,11 @@ $playerItemsData = new PlayerItemsData();
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ('POST' === $method) {
-  $playerItems =$playerItemsData->getItemsFromPost($_POST["playerItems"]);
-  $playerID = $_POST["playerID"];
+  $json = file_get_contents('php://input');
+  $data = json_decode($json);
+  $playerItems = $data->playerItems;
+  $playerID = $data->playerID;
+
   $playerItemsData->putItems($conn, $playerItems, $playerID);
   if (!$conn->error) {
     http_response_code(200);

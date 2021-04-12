@@ -67,7 +67,7 @@ function getAttackResult(atk) {
 function killMonster(enemyType, playerID) {
     store.pause = true;
     // will update player and player items
-    return $.post("api/rewardPlayer.php", { enemyIDs: [enemyType.id], playerID: store.player.id }, function (result) {
+    return $.post("api/rewardPlayerPOST.php", JSON.stringify( { enemyIDs: [enemyType.id], playerID: store.player.id }), function (result) {
         var dbResult = JSON.parse(result);
         console.log('dbplayer', dbResult);
         var rewardedItem = selectItem(dbResult.rewardedItemID);
@@ -159,26 +159,20 @@ function movePlayer(x, y) {
 
 function persistGameData(data) {
 
-    if (data.playerItems && data.playerItems.length == 0) {
-        data.playerItems = "empty";
-    }
     data.playerID = store.player.id;
     store.pause = true;
-    return $.post("api/gameData.php", data, function (result) {
+    return $.post("api/gameData.php", JSON.stringify(data), function (result) {
         var dbData = JSON.parse(result);
         store = { ...store, ...dbData };
-        if (store.playerItems === 'empty') {
-            store.playerItems = [];
-        }
         store.pause = false;
     });
 }
 
 function persistPlayer(player) {
     store.pause = true;
-    return $.post("api/playerPOST.php", player, function (result) {
+    return $.post("api/playerPOST.php", JSON.stringify(player), function (result) {
         var dbPlayer = JSON.parse(result);
-        console.log('dbplayer', dbPlayer);
+  
         store.player = dbPlayer;
         store.pause = false;
     });

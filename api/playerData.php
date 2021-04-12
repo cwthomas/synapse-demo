@@ -21,23 +21,11 @@ class PlayerData {
     }}
 
     public function put($conn, $player) {
-        extract($player);
-        $sql = "UPDATE player SET name='".$name."', atk=".$atk.", def=".$def.", hp=".$hp.", xp=".$xp." WHERE id = ".$id;
+    
+        $sql = "UPDATE player SET name='".$player->name."', atk=".$player->atk.", def=".$player->def.", hp=".$player->hp.", xp=".$player->xp." WHERE id = ".$player->id;
         $result = $conn->query($sql);
         return $result;
     }
 
-    public function getPlayerFromPOST($postData){
-        extract($postData);
-        $player_item = array(
-            "id" => intval($id),
-            "name" => $name,
-            "atk" => intval($atk),
-            "def" => intval($def),
-            "hp" => intval($hp),
-            "xp" => intval($xp)
-          );
-          return $player_item;
-    }
   
 }

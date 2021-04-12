@@ -109,7 +109,7 @@ function removeItemFromMap(loc) {
 // when the backend doesn't agree
 function persistPlayerItems(playerItems, playerID) {
 
-    return $.post("api/playerItemPOST.php", { playerItems, playerID }, function (result) {
+    return $.post("api/playerItemPOST.php",JSON.stringify( { playerItems, playerID }), function (result) {
         var dbPlayerItems = JSON.parse(result);
         store.playerItems = dbPlayerItems;
 

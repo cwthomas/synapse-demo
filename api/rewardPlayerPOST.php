@@ -12,8 +12,10 @@ $enemyData = new EnemyData();
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ('POST' === $method) {
-  $enemyIDs = $_POST["enemyIDs"];
-  $playerID = $_POST["playerID"];
+  $json = file_get_contents('php://input');
+  $data = json_decode($json);
+  $enemyIDs = $data->enemyIDs;
+  $playerID = $data->playerID;
   $player = (object)$playerData->get($conn, $playerID);
   $enemy = (object)$enemyData->getOne($conn, $enemyIDs[0]);
   $playerItems = $playerItemsData->get($conn, $player->id);
@@ -36,8 +38,8 @@ if ('POST' === $method) {
   array_push($playerItems, $itemToReward);
   
 
-  $playerItemsData->putItem($conn, $itemToReward, $playerID);
-  $playerData->put($conn, (array)$player);
+  $playerItemsData->putItem($conn, (object)$itemToReward, $playerID);
+  $playerData->put($conn, $player);
 
 
   $result = array(

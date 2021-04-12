@@ -32,7 +32,7 @@ if ('GET' === $method) {
   $mapItems = $mapItemsData->get($conn);
   $enemies = $enemyData->getAll($conn);
   $items = $itemData->get($conn);
-  $playerItems = $playerItemsData->get($conn,$player->id);
+  $playerItems = $playerItemsData->get($conn, $player->id);
   $game_data = array(
     "player" => $player,
     "map" => $map,
@@ -47,37 +47,25 @@ if ('GET' === $method) {
 
 
 // right now only player and player items can be persisted, but would add more if needed
-if ('POST' === $method) {  
-  $playerID = intval($_POST["playerID"]);
-  $playerItemsEmpty = false;
+if ('POST' === $method) {
+  $json = file_get_contents('php://input');
+  $data = json_decode($json);
 
-  if ($_POST["playerItems"] ){
-    if ($_POST["playerItems"] == "empty") {
-      $playerItems = array();
-      $playerItemsEmpty = true;
-    } else {
-      $playerItems = $playerItemsData->getItemsFromPost($_POST["playerItems"]);
-    }
-  }
- 
-  $player = $playerData->getPlayerFromPOST($_POST["player"]);
-
+  $playerID = $data->playerID;
 
   $resultObject = array();
-
-  if ($playerItems) {
-    $playerItemsData->putItems($conn, $playerItems, $playerID);
-    $resultObject["playerItems"] = $playerItems;
+  if (isset($data->playerItems)) {
+    if (count($data->playerItems) > 0) {
+      $playerItemsData->putItems($conn, $data->playerItems, $playerID);
+    } else {
+      $playerItemsData->clearItems($conn, $playerID);
+    }
+    $resultObject["playerItems"] =  $data->playerItems;
   }
 
-  if ($playerItemsEmpty) {
-    $playerItemsData->clearItems($conn, $playerID);
-    $resultObject["playerItems"] = "empty";
-  }
-
-  if ($player) {
-    $playerData->put($conn, $player);
-    $resultObject["player"] = $player;
+  if (isset($data->player)) {
+    $playerData->put($conn, $data->player);
+    $resultObject["player"] = $data->player;
   }
 
   if (!$conn->error) {

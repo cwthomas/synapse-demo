@@ -9,7 +9,8 @@ $playerData = new PlayerData();
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ('POST' === $method) {
-  $player = $playerData->getPlayerFromPOST($_POST);
+  $json = file_get_contents('php://input');
+  $player = json_decode($json);
   $result = $playerData->put($conn, $player);
   if ($result === TRUE) {
     http_response_code(200);
