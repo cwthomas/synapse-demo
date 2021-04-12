@@ -48,23 +48,6 @@ class PlayerItemsData {
     foreach($playerItems as $playerItem) {
       $this->putItem($conn, $playerItem, $playerID);
     }
-  }
-
-  public function getItemsFromPost($postData){
-    $newItems = array();
-    foreach($postData as $oldPlayerItem){
-      $playerItem = array(
-        "playerID" => intval($oldPlayerItem["playerID"]),
-        "itemID" => intval($oldPlayerItem["itemID"]),
-        "qty" =>intval($oldPlayerItem["qty"]),
-      );
-      array_push($newItems, $playerItem);
-    }
-
-      return $newItems;
-}
-
-
-  
+  }  
 
 }
