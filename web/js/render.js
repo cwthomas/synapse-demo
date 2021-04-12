@@ -50,6 +50,10 @@ function renderItem(id, x, y) {
     renderMapImage(img, x, y);
 }
 
+
+// here I would have done photoshop editing and made different color
+// icons for the potions
+// as it is, they have labels
 function getImageForItem(id) {
     switch(id) {
         case 1:  // attack potion

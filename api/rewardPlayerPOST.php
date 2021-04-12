@@ -25,16 +25,13 @@ if ('POST' === $method) {
 
   $playerID = $data->playerID;
   $player = (object)$playerData->get($conn, $playerID);
-
   // get the enemy that the player just defeated
   $enemy = (object)$enemyData->getOne($conn, $enemyIDs[0]);
-  
   // we are going to return the full set of player items 
   // for the client to replace
   // I could also send just the added items.
   // it was a tossup as to which was simpler.
   $playerItems = $playerItemsData->get($conn, $player->id);
-
   // give the player the XP for the enemy
   $player->xp += $enemy->xpReward;
   
@@ -69,7 +66,6 @@ if ('POST' === $method) {
 
   // save off the player with increased XP
   $playerData->put($conn, $player);
-
 
   $result = array(
     "player" => $player,

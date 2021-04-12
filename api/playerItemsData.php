@@ -31,6 +31,12 @@ class PlayerItemsData
 
       return $playerItems;
     }
+
+        // close out result set from sproc
+        if (!is_bool($result)) {
+          $result->close();
+          $conn->next_result();
+        }
   }
 
   public function putItem($conn, $playerItem, $playerID)
@@ -53,13 +59,17 @@ class PlayerItemsData
   public function clearItems($conn, $playerID)
   {
     $sqlClear = "CALL clearPlayerItems(" . $playerID . ")";
-    $conn->query($sqlClear);
+    $result = $conn->query($sqlClear);
 
     if ($conn->error) {
       echo $conn->error;
       return;
     }
-    $conn->next_result();
+        // close out result set from sproc
+        if (!is_bool($result)) {
+          $result->close();
+          $conn->next_result();
+        }
   }
 
   // this is intended when writing out all existing playeritems for a given player

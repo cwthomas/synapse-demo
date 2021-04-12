@@ -3,13 +3,15 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="web/stylesheets/rogue.css">
+    
     <script src="web/js/gameLogic.js"></script>
+    
+    <script src="web/js/combat.js"></script>
     <script src="web/js/items.js"></script>
     <script src="web/js/render.js"></script>
 </head>
 <script>
     store = {};
-
 
     document.onkeydown = function (event) {
         // keep player from moving while waiting for request from server
@@ -49,28 +51,33 @@
         }
     };
 
+    // S key dumps the store
     function dumpStore() {
         console.log(store);
     }
 
+    // spawn as many enemies as the map data indicates
     function spawnEnemies() {
         var enemies = store.map.enemies;
         for (var i = 0; i < enemies; i++) {
 
+            // try a location
             var location = getRandomMapLocation();
+
+            // if it's not available try another one
             while (!isAvailable(location)) {
                 location = getRandomMapLocation();
             }
+
+            // we found an empty location
+            // put an enemy here
             spawnEnemy(location.x, location.y);
         }
     }
 
 
     function startGame() {
-        // yes in this instance it's a bit overkill to do another trip
-        // when we could have just let the PHP server set the player start
-        // though in a real game, we probably wouldn't be constantly saving player postition
-        // only save points.
+
         store.activeEnemies = [];
         movePlayer(store.map.startX, store.map.startY);
         spawnEnemies();
@@ -79,6 +86,8 @@
         // this is used to keep player from moving and acting while
         // XHR's are in flight.
         store.pause = false;
+        
+        // I'm intentionally leaving this in in case anyone is curious to look at it in the console
         console.log(store);
     }
 
@@ -88,9 +97,9 @@
         return Math.floor(Math.random() * max);
     }
 
+    // reset and reload the game
     function reset() {
         var gameData = $.get("api/setup.php", function (data) {
-            alert(data);
             location.reload();
         });
     }
@@ -104,7 +113,6 @@
                 store.playerItems = [];
             }
             store.playerLoc = { x: 0, y:0 }
-            console.log(store);
         });
 
         $.when(gameData).done(function () {

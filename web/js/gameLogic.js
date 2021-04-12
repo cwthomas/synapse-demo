@@ -1,98 +1,7 @@
-function checkCombat(loc) {
-    if (store.player.atk <= 1) {
-        playerMessage("You can't attack.  You're too weak.  Find your strength!");
-        return;
-    }
-    var monster = getMonsterAt(loc);
-    var damage = getAttackResult(store.player.atk);
-    damage -= monster.enemyType.def;
-
-    if (damage >= monster.activeEnemy.hp) {
-        var promise = killMonster(monster.enemyType, store.player.id);
-        $.when(promise).done(() => {
-            // make it real on the server first
-
-            removeMonsterAt(loc);
-            render();
-            checkDone();
-        });
-    } else {
-        monster.activeEnemy.hp -= damage;
-
-        var monsterDamage = getAttackResult(monster.enemyType.atk);
-        monsterDamage -= store.player.def;
-        var promise = changePlayerHP(-monsterDamage, store.player.id);
-        $.when(promise).done(() => {
-            // make it real on the server first
-            playerMessage("You attack! Damage = " + damage + " But enemy hits for: " + monsterDamage);
-            render();
-            checkDead();
-        });
-
-
-    }
-
-}
-function checkDone() {
-    if (store.activeEnemies.length === 0) {
-        alert("You defeated all the demons!  Your clan has regained honor!");
-        reset();
-    }
-}
-
-
-function checkDead() {
-    if (store.player.hp < 0) {
-        alert("You have died!  Resetting game....");
-        reset();
-    }
-}
-
-function removeMonsterAt(loc) {
-    var index = store.activeEnemies.findIndex((enemy) => (enemy.x == loc.x) && (enemy.y == loc.y));
-    store.activeEnemies.splice(index, 1);
-}
-
-function getAttackResult(atk) {
-    var damage = 0;
-
-    // you get one swing per attack value
-    for (var i = 0; i < atk; i++) {
-        damage += getRandom(6);
-    }
-
-    return damage;
-}
-
-function killMonster(enemyType, playerID) {
-    store.pause = true;
-    // will update player and player items
-    return $.post("api/rewardPlayerPOST.php", JSON.stringify( { enemyIDs: [enemyType.id], playerID: store.player.id }), function (result) {
-        var dbResult = JSON.parse(result);
-
-        var rewardedItem = selectItem(dbResult.rewardedItemID);
-
-        $message ="You attack! And kill the " + enemyType.name + ". It gives you a " + rewardedItem.name + " and " + dbResult.rewardedXP + " XP!";
-            
-        alert($message);
-        playerMessage($message);
-        store.player = dbResult.player;
-        store.playerItems = dbResult.playerItems ? dbResult.playerItems : [];
-        store.pause = false;
-        render();
-    });
-}
-
-function changePlayerHP(hp, playerID) {
-    var clonePlayer = { ...store.player };
-    clonePlayer.hp += hp;
-    return persistPlayer(clonePlayer, store.player.id);
-}
 
 function isMonster(loc) {
     return store.activeEnemies.findIndex((enemy) => (enemy.x == loc.x) && (enemy.y == loc.y)) > -1;
 }
-
 
 function getMonsterAt(loc) {
     var activeEnemy = store.activeEnemies.find((enemy) => (enemy.x == loc.x) && (enemy.y == loc.y));
@@ -105,6 +14,7 @@ function isItem(loc) {
     return index > -1;
 }
 
+// probably could be named find or get, but used to doing Angular NGRX
 function selectItem(id) {
     return store.items.find((item) => item.id == id);
 }
@@ -114,6 +24,8 @@ function getItemAt(loc) {
     return selectItem(item.itemID);
 }
 
+// boundaries of map
+// in the future the map could be populated with immovable wall items
 function isEdge(location) {
     if ((location.x < 0) || (location.y < 0) || (location.x > store.map.width - 1) || (location.y > store.map.height - 1)) {
         return true;
@@ -126,8 +38,8 @@ function getRandomMapLocation() {
     var y = getRandom(store.map.height - 1);
     return { x: x, y: y };
 }
-function movePlayerDelta(x, y) {
 
+function movePlayerDelta(x, y) {
     clearMessage();
     var newLoc = { x: store.playerLoc.x + x, y: store.playerLoc.y + y };
     if (isEdge(newLoc)) {
@@ -149,16 +61,13 @@ function movePlayerDelta(x, y) {
 
 }
 
-
 function movePlayer(x, y) {
     store.playerLoc.x = x;
     store.playerLoc.y = y;
-    render();
-}
+    render();}
 
 
 function persistGameData(data) {
-
     data.playerID = store.player.id;
     store.pause = true;
     return $.post("api/gameData.php", JSON.stringify(data), function (result) {

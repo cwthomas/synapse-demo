@@ -14,9 +14,9 @@ public function getConnection() {
     $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->schema);
 
     // Check connection
-    // if ($this$conn->connect_error) {
-    //  die("Connection failed: " . $conn->connect_error);
-    //}
+    if ($this->conn->error) {
+     die("Connection failed: " . $this->conn->connect_error);
+    }
     return $this->conn;
 }
 }
