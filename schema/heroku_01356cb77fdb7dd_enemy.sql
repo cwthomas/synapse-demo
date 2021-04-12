@@ -8,8 +8,6 @@
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
@@ -39,12 +37,8 @@ CREATE TABLE `enemy` (
 -- Dumping data for table `enemy`
 --
 
-LOCK TABLES `enemy` WRITE;
-/*!40000 ALTER TABLE `enemy` DISABLE KEYS */;
-INSERT INTO `enemy` VALUES (1,'demon',5,1,1,'[{\"id\": 1, \"chance\":30}, {\"id\": 2}, {\"id\": 3}]','Lil Demon',10),(2,'boss-demon',30,3,3,'[{\"id\": 1, \"chance\":100}]','Boss Demon',100);
-/*!40000 ALTER TABLE `enemy` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+INSERT INTO `enemy` VALUES (1,'demon',5,1,1,'[{\"id\": 1, \"chance\":30}, {\"id\": 2}, {\"id\": 3}]','Lil Demon',10);
+INSERT INTO `enemy` VALUES (2,'boss-demon',30,3,3,'[{\"id\": 1, \"chance\":100}]','Boss Demon',100);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
