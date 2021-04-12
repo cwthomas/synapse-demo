@@ -6,9 +6,10 @@ $conn = $database->getConnection();
 
 $playerItemsData = new PlayerItemsData();
 
-
 $method = $_SERVER['REQUEST_METHOD'];
 
+
+// Endpoint router to update player items
 if ('POST' === $method) {
   $json = file_get_contents('php://input');
   $data = json_decode($json);
@@ -23,8 +24,5 @@ if ('POST' === $method) {
     echo "Error updating record: " . $conn->error;
   }
 }
-
-
-
 
 $conn->close();

@@ -3,6 +3,10 @@ include_once '../config/database.php';
 
 $database = new Database();
 $conn = $database->getConnection();
+
+
+// this resets the game and re-inserts all initial data into
+// the appropriate tables
 $setup = "CALL gameDataSetup";
 
 $result = $conn->query($setup);

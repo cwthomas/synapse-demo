@@ -1,6 +1,7 @@
 <?php
 include_once '../config/database.php';
 
+// manages acces to the mapitem entities
 class MapItemsData
 {
   public function get($conn, $mapID)

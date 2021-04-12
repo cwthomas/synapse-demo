@@ -1,5 +1,5 @@
 <?php
-
+// Manages access to item entities
 class ItemData
 {
   public function get($conn)
@@ -20,7 +20,6 @@ class ItemData
         array_push($items, $item);
       }
 
-
       // close out result set from sproc
       $result->close();
       $conn->next_result();
@@ -28,8 +27,6 @@ class ItemData
       return $items;
     }
   }
-
-
 
   private function mapRowToItem($row)
   {

@@ -69,10 +69,13 @@ function killMonster(enemyType, playerID) {
     // will update player and player items
     return $.post("api/rewardPlayerPOST.php", JSON.stringify( { enemyIDs: [enemyType.id], playerID: store.player.id }), function (result) {
         var dbResult = JSON.parse(result);
-        console.log('dbplayer', dbResult);
+
         var rewardedItem = selectItem(dbResult.rewardedItemID);
 
-        alert("You attack! And kill the " + enemyType.name + ". It gives you a " + rewardedItem.name + " and " + dbResult.rewardedXP + " XP!");
+        $message ="You attack! And kill the " + enemyType.name + ". It gives you a " + rewardedItem.name + " and " + dbResult.rewardedXP + " XP!";
+            
+        alert($message);
+        playerMessage($message);
         store.player = dbResult.player;
         store.playerItems = dbResult.playerItems ? dbResult.playerItems : [];
         store.pause = false;
@@ -85,9 +88,6 @@ function changePlayerHP(hp, playerID) {
     clonePlayer.hp += hp;
     return persistPlayer(clonePlayer, store.player.id);
 }
-
-
-
 
 function isMonster(loc) {
     return store.activeEnemies.findIndex((enemy) => (enemy.x == loc.x) && (enemy.y == loc.y)) > -1;

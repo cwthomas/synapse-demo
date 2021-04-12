@@ -1,7 +1,10 @@
 <?php
 
+// Manages Enemy entities in the database.
 class EnemyData
 {
+
+  // Get All Enemies
   public function getAll($conn)
   {
     $sql = "CALL getAllEnemies()";
@@ -29,6 +32,7 @@ class EnemyData
     }
   }
 
+  // Get One Enemy by EnemyID
   public function getOne($conn, $enemyID)
   {
     $sql = "CALL getEnemy(" . $enemyID. ")";

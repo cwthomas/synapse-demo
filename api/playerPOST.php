@@ -8,6 +8,7 @@ $playerData = new PlayerData();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// update the player object 
 if ('POST' === $method) {
   $json = file_get_contents('php://input');
   $player = json_decode($json);

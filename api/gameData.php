@@ -19,9 +19,9 @@ $itemData = new ItemData();
 $method = $_SERVER['REQUEST_METHOD'];
 
 // I am grouping all of these data elements together for efficiency since the game will need all of these items at once and it will 
-// result in only one API call 
-// This game is simple, so this is only called once at the beginning.  However, if multiple fetches of specific data were needed
-// I would modify this to include a parameter specifying which entities are needed.
+// result in only one API call at startup instead of one for each entity.
+// 
+// I would modify this GET to include a parameter specifying which entities are needed.
 // For example, if the game was loading a new map, it would probably specify : map, mapItems, mapEnemies
 
 // I like to keep the data "flat" as separate arrays of entities (maps and mapItems) instead of nested ( maps ( items) ) as it makes it much simpler to update, insert delete etc.

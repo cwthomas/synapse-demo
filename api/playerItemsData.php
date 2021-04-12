@@ -1,6 +1,8 @@
 <?php
 include_once '../config/database.php';
 
+
+// manages player items
 class PlayerItemsData
 {
   public function get($conn, $playerID)
@@ -15,7 +17,6 @@ class PlayerItemsData
 
     $playerItems = array();
     if ($result->num_rows > 0) {
-      // output data of each row
       while ($row = $result->fetch_assoc()) {
         extract($row);
         $playerItem = array(
@@ -34,7 +35,6 @@ class PlayerItemsData
 
   public function putItem($conn, $playerItem, $playerID)
   {
-
     $sql = "CALL upsertPlayerItem (" . $playerID . "," . $playerItem->itemID . "," . $playerItem->qty . ");";
     $result = $conn->query($sql);
 
@@ -43,12 +43,11 @@ class PlayerItemsData
       return;
     }
 
-      // close out result set from sproc
-      if ($result !== TRUE) {
-        $result->close();
-        $conn->next_result();
-      }
-    
+    // close out result set from sproc
+    if (!is_bool($result)) {
+      $result->close();
+      $conn->next_result();
+    }
   }
 
   public function clearItems($conn, $playerID)
@@ -61,9 +60,9 @@ class PlayerItemsData
       return;
     }
     $conn->next_result();
-    
   }
 
+  // this is intended when writing out all existing playeritems for a given player
   public function putItems($conn, $playerItems, $playerID)
   {
     // for a case with just a few items it's easiest to just clear the entires and re-write

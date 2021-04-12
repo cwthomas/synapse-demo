@@ -1,6 +1,7 @@
 <?php
 include_once '../config/database.php';
 
+// manages access to the map entity
 class MapData {
   public function get($conn) {
     $sql = "CALL getMap();";
