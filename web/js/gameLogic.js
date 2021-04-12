@@ -11,13 +11,14 @@ function checkCombat(loc) {
         var promise = killMonster(monster.enemyType, store.player.id);
         $.when(promise).done(() => {
             // make it real on the server first
-           
+
             removeMonsterAt(loc);
             render();
+            checkDone();
         });
     } else {
         monster.activeEnemy.hp -= damage;
-        
+
         var monsterDamage = getAttackResult(monster.enemyType.atk);
         monsterDamage -= store.player.def;
         var promise = changePlayerHP(-monsterDamage, store.player.id);
@@ -27,12 +28,17 @@ function checkCombat(loc) {
             render();
             checkDead();
         });
-       
+
 
     }
 
 }
-
+function checkDone() {
+    if (store.activeEnemies.length === 0) {
+        alert("You defeated all the demons!  Your clan has regained honor!");
+        reset();
+    }
+}
 
 
 function checkDead() {
@@ -60,15 +66,15 @@ function getAttackResult(atk) {
 
 function killMonster(enemyType, playerID) {
     store.pause = true;
-   // will update player and player items
-    return $.post("api/rewardPlayer.php", {enemyID : enemyType.id, playerID: store.player.id}, function (result) {
+    // will update player and player items
+    return $.post("api/rewardPlayer.php", { enemyIDs: [enemyType.id], playerID: store.player.id }, function (result) {
         var dbResult = JSON.parse(result);
         console.log('dbplayer', dbResult);
         var rewardedItem = selectItem(dbResult.rewardedItemID);
-    
-        playerMessage("You attack! And kill the " + enemyType.name + ". It gives you a " + rewardedItem.name + " and " + dbResult.rewardedXP + " XP!");
+
+        alert("You attack! And kill the " + enemyType.name + ". It gives you a " + rewardedItem.name + " and " + dbResult.rewardedXP + " XP!");
         store.player = dbResult.player;
-        store.playerItems = dbResult.playerItems? dbResult.playerItems : [];
+        store.playerItems = dbResult.playerItems ? dbResult.playerItems : [];
         store.pause = false;
         render();
     });
@@ -86,6 +92,7 @@ function changePlayerHP(hp, playerID) {
 function isMonster(loc) {
     return store.activeEnemies.findIndex((enemy) => (enemy.x == loc.x) && (enemy.y == loc.y)) > -1;
 }
+
 
 function getMonsterAt(loc) {
     var activeEnemy = store.activeEnemies.find((enemy) => (enemy.x == loc.x) && (enemy.y == loc.y));
@@ -179,7 +186,7 @@ function persistPlayer(player) {
 
 function isAvailable(location) {
     // player
-    if (location.x == store.playerLoc.x && location.y == store.player.y) {
+    if (location.x == store.playerLoc.x && location.y == store.playerLoc.y) {
         return false;
     }
     // enemy 

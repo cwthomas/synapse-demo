@@ -70,7 +70,7 @@ function renderInventory() {
     for(var i = 1; i<= limit; i++ ){
         var id = store.playerItems[i-1].itemID;
         var item = selectItem(id);
-        renderInventoryItem(i, item);
+        renderInventoryItem(i, item,  store.playerItems[i-1].qty);
     }
 }
 
@@ -81,10 +81,11 @@ function clearInventory() {
     }
 }
 
-function renderInventoryItem(itemNo, item) {
+function renderInventoryItem(itemNo, item, qty) {
+    var qtyDesc = qty> 1? ' ' +qty: '';
     var img = getImageForItem(item.id);
     $("#inv"+itemNo).attr("src", img.src);
-    $("#inv"+itemNo+"desc").html(item.name);
+    $("#inv"+itemNo+"desc").html(item.name + qtyDesc);
     
 }
 

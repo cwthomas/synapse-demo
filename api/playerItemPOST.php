@@ -10,7 +10,7 @@ $playerItemsData = new PlayerItemsData();
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ('POST' === $method) {
-  $playerItems =$_POST["playerItems"];
+  $playerItems =$playerItemsData->getItemsFromPost($_POST["playerItems"]);
   $playerID = $_POST["playerID"];
   $playerItemsData->putItems($conn, $playerItems, $playerID);
   if (!$conn->error) {

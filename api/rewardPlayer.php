@@ -12,10 +12,10 @@ $enemyData = new EnemyData();
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ('POST' === $method) {
-  $enemyID = $_POST["enemyID"];
+  $enemyIDs = $_POST["enemyIDs"];
   $playerID = $_POST["playerID"];
   $player = (object)$playerData->get($conn, $playerID);
-  $enemy = (object)$enemyData->getOne($conn, $enemyID);
+  $enemy = (object)$enemyData->getOne($conn, $enemyIDs[0]);
   $playerItems = $playerItemsData->get($conn, $player->id);
 
   // add player xp
@@ -34,6 +34,7 @@ if ('POST' === $method) {
   }
 
   array_push($playerItems, $itemToReward);
+  
 
   $playerItemsData->putItem($conn, $itemToReward, $playerID);
   $playerData->put($conn, (array)$player);

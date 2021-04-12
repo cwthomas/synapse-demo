@@ -21,7 +21,7 @@ class PlayerItemsData {
   }}
 
   public function putItem($conn, $playerItem, $playerID) {
-    $sql = "INSERT INTO playeritems VALUES (".$playerID.",".$playerItem["itemID"].", 1)";
+    $sql = "CALL UpsertPlayerItem (".$playerID.",".$playerItem["itemID"].",".$playerItem["qty"].");";
     $result = $conn->query($sql);
     if ($conn->error) {
       echo $conn->error;
