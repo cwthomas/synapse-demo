@@ -27,9 +27,10 @@ $method = $_SERVER['REQUEST_METHOD'];
 // I like to keep the data "flat" as separate arrays of entities (maps and mapItems) instead of nested ( maps ( items) ) as it makes it much simpler to update, insert delete etc.
 // It also keeps things more flexible overall.
 if ('GET' === $method) {
+  $map = (object)$mapData->get($conn);
   $player = (object)$playerData->get($conn, 1);
-  $map = $mapData->get($conn);
-  $mapItems = $mapItemsData->get($conn);
+
+  $mapItems = $mapItemsData->get($conn,$map->id);
   $enemies = $enemyData->getAll($conn);
   $items = $itemData->get($conn);
   $playerItems = $playerItemsData->get($conn, $player->id);

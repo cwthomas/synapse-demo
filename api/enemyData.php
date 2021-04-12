@@ -4,12 +4,14 @@ class EnemyData
 {
   public function getAll($conn)
   {
-    $sql = "SELECT id, type, atk, def, hp, itemdrops, name, xp_reward FROM enemy";
+    $sql = "CALL getAllEnemies()";
     $result = $conn->query($sql);
+    
     if ($conn->error) {
       echo $conn->error;
       return;
     }
+
     $enemies = array();
     if ($result->num_rows > 0) {
       // output data of each row
@@ -18,13 +20,18 @@ class EnemyData
         $enemy = $this->mapRowToEnemy($row);
         array_push($enemies, $enemy);
       }
+
+      // close out the result set from the sproc
+      $result->close();
+      $conn->next_result();
+
       return $enemies;
     }
   }
 
   public function getOne($conn, $enemyID)
   {
-    $sql = "SELECT id, type, atk, def, hp, itemdrops, name, xp_reward FROM enemy WHERE id=" . $enemyID;
+    $sql = "CALL getEnemy(" . $enemyID. ")";
     $result = $conn->query($sql);
     if ($conn->error) {
       echo $conn->error;
@@ -36,6 +43,10 @@ class EnemyData
       $row = $result->fetch_assoc();
 
       $enemy = $this->mapRowToEnemy($row);
+
+      // close out result set from sproc
+      $result->close();
+      $conn->next_result();
 
       return $enemy;
     }

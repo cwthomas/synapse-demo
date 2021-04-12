@@ -1,53 +1,78 @@
 <?php
 include_once '../config/database.php';
 
-class PlayerItemsData {
-  public function get($conn, $playerID) {
-    $sql = "SELECT player_id, item_id, qty FROM playeritems WHERE player_id =".$playerID;
+class PlayerItemsData
+{
+  public function get($conn, $playerID)
+  {
+    $sql = "CALL getPlayerItems(" . $playerID . ")";
     $result = $conn->query($sql);
+
+    if ($conn->error) {
+      echo $conn->error;
+      return;
+    }
+
     $playerItems = array();
     if ($result->num_rows > 0) {
       // output data of each row
-      while($row = $result->fetch_assoc()) {
-      extract($row);
-      $playerItem = array(
-        "playerID" => intval($player_id),
-        "itemID" => intval($item_id),
-        "qty" => intval($qty)
-      );
-      array_push($playerItems, $playerItem);
-    }
+      while ($row = $result->fetch_assoc()) {
+        extract($row);
+        $playerItem = array(
+          "playerID" => intval($player_id),
+          "itemID" => intval($item_id),
+          "qty" => intval($qty)
+        );
+        array_push($playerItems, $playerItem);
+      }
+      $result->close();
+      $conn->next_result();
+
       return $playerItems;
-  }}
+    }
+  }
 
-  public function putItem($conn, $playerItem, $playerID) {
-    $sql = "CALL UpsertPlayerItem (".$playerID.",".$playerItem->itemID.",".$playerItem->qty.");";
+  public function putItem($conn, $playerItem, $playerID)
+  {
+
+    $sql = "CALL upsertPlayerItem (" . $playerID . "," . $playerItem->itemID . "," . $playerItem->qty . ");";
     $result = $conn->query($sql);
+
     if ($conn->error) {
       echo $conn->error;
       return;
     }
-    return $result;
+
+      // close out result set from sproc
+      if ($result !== TRUE) {
+        $result->close();
+        $conn->next_result();
+      }
+    
   }
 
-  public function clearItems($conn, $playerID) {
-    $sqlClear = "DELETE FROM playeritems WHERE player_id = ".$playerID;
+  public function clearItems($conn, $playerID)
+  {
+    $sqlClear = "CALL clearPlayerItems(" . $playerID . ")";
     $conn->query($sqlClear);
+
     if ($conn->error) {
       echo $conn->error;
       return;
     }
+    $conn->next_result();
+    
   }
 
-  public function putItems($conn, $playerItems, $playerID){
+  public function putItems($conn, $playerItems, $playerID)
+  {
     // for a case with just a few items it's easiest to just clear the entires and re-write
     // as opposed to determining insert/update/delete
     // for situations with a large number of items, calculating the delta would be more appropriate
     $this->clearItems($conn, $playerID);
 
-    foreach($playerItems as $playerItem) {
+    foreach ($playerItems as $playerItem) {
       $this->putItem($conn, $playerItem, $playerID);
     }
-  }  
-
+  }
 }
